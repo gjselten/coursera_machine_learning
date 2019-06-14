@@ -40,6 +40,9 @@ Theta2_grad = zeros(size(Theta2));
 %         computed in ex4.m
 %
 
+% STEP 1: CALCULATE H
+% note this is similar to ex3 predict.m
+
 % go from input layer to hidden layer
 Xtemp = [ones(m, 1) X];           % add ones to X
 layer_1_z = Xtemp * Theta1';      % calculate Z for hidden layer
@@ -51,6 +54,21 @@ Xtemp2 = [ones(m2, 1) X2];           % add ones to X2
 layer_2_z = Xtemp2 * Theta2';        % calculate Z for hidden layer
 h = sigmoid(layer_2_z);              % calculate H for output layer
 
+% STEP 2: transform y from 5000*1 to 5000*10
+% - at this point 'y' is simply stating what class the answer is (eg 1,2,3 etc)
+% - instead, we want y to be a vector of 10, where everything is 0, exept the right class.
+%   eg 7 = 0 0 0 0 0 0 1 0 0 0
+Y = zeros(size(y),num_labels);
+for i=1:size(y)
+  Y(i,y(i)) = 1;
+end
+
+% STEP 3: calculate J
+J = (1 / m) * sum(sum((-1 * Y .* log(h) - ((1 - Y) .* log(1  - h)))));
+
+% STEP 4: regularize
+reg = lambda /(2 * m) * (sum(sum(Theta1(:,2:end) .^ 2)) + sum(sum(Theta2(:,2:end) .^ 2)));
+J = J + reg;
 
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
@@ -66,7 +84,8 @@ h = sigmoid(layer_2_z);              % calculate H for output layer
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the
 %               first time.
-%
+
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
@@ -74,9 +93,6 @@ h = sigmoid(layer_2_z);              % calculate H for output layer
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-
-
-
 
 
 
