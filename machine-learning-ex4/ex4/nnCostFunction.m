@@ -85,6 +85,39 @@ J = J + reg;
 %               over the training examples if you are implementing it for the
 %               first time.
 
+accumulated_delta_1 = 0;
+accumulated_delta_2 = 0;
+for i=1:m
+  % step 1 is forward pass (orward propagation). calculate all activations.
+  % note, we could also have used the previously calculated values, but
+  % following the instructions here seems cleaner.
+  % a3 = h(i,:)
+  % a2 = Xtemp2(i,:)
+
+  a1 = Xtemp(i,:);
+  z2 = a1 * Theta1';
+  a2 = sigmoid(z2);
+  a2 = [1 a2];
+  z3 = a2 * Theta2';
+  a3 = sigmoid(z3);
+
+  % step 2: delta for output layer
+  % we can simply find this by subtracing the actual value from the h(=a3)
+  d3 = a3 - Y(i,:);
+
+  % step 3: delta for hidden layer
+  % this is a bit harder but just following the formulas.
+  temp = Theta2' * d3';
+  d2 = temp(2:end)' .* sigmoidGradient(z2);
+
+  % step 4: accumulate deltas
+  accumulated_delta_1 = accumulated_delta_1 + d2' * a1;
+  accumulated_delta_2 = accumulated_delta_2 +d3' * a2;
+end
+
+% step 5: obtain unregularized gradient
+Theta1_grad = (1/m)*accumulated_delta_1;
+Theta2_grad = (1/m)*accumulated_delta_2;
 
 % Part 3: Implement regularization with the cost function and gradients.
 %
