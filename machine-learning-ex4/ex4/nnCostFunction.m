@@ -119,6 +119,14 @@ end
 Theta1_grad = (1/m)*accumulated_delta_1;
 Theta2_grad = (1/m)*accumulated_delta_2;
 
+regTheta1 = Theta1;
+regTheta1(:,1) = 0;
+regTheta2 = Theta2;
+regTheta2(:,1) = 0;
+
+Theta1_grad = (1/m) * accumulated_delta_1 + ( lambda / m * regTheta1 );
+Theta2_grad = (1/m) * accumulated_delta_2 + ( lambda / m * regTheta2 );
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
