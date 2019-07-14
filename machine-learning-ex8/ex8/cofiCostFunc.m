@@ -48,10 +48,13 @@ J = sum(1/2 * sum(temp_J));
 % J regularization calculations
 J = J + (lambda / 2 * sum(sum((Theta .^2)))) + (lambda / 2 * sum(sum((X .^2))));
 
+% gradient calculations
 temp_scored = temp .* R; % only consider examples that have been scored by user
 X_grad = temp_scored  * Theta;
 Theta_grad = temp_scored' * X;
-
+% gradient regularization calculations
+X_grad = X_grad + lambda * X;
+Theta_grad = Theta_grad + lambda * Theta;
 
 % =============================================================
 
