@@ -40,11 +40,17 @@ Theta_grad = zeros(size(Theta));
 %                     partial derivatives w.r.t. to each element of Theta
 %
 
-temp = (X*Theta'-Y) .^ 2;
-temp = temp .* R; % only use values where R==1
-J = sum(1/2 * sum(temp));
+temp = (X*Theta'-Y);
 
+% J calculations
+temp_J = (temp .^2) .* R; % only use values where R==1
+J = sum(1/2 * sum(temp_J));
+% J regularization calculations
+J = J + (lambda / 2 * sum(sum((Theta .^2)))) + (lambda / 2 * sum(sum((X .^2))));
 
+temp_scored = temp .* R; % only consider examples that have been scored by user
+X_grad = temp_scored  * Theta;
+Theta_grad = temp_scored' * X;
 
 
 % =============================================================
